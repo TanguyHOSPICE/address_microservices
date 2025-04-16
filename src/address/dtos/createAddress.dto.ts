@@ -1,4 +1,11 @@
-import { IsMongoId, IsString, IsOptional, IsBoolean } from 'class-validator';
+import {
+  IsMongoId,
+  IsString,
+  IsOptional,
+  IsBoolean,
+  IsEnum,
+} from 'class-validator';
+import { EnumAddressStatus, EnumAddressType } from 'src/utils/enums';
 
 export class CreateAddressDto {
   @IsMongoId()
@@ -26,4 +33,8 @@ export class CreateAddressDto {
   @IsOptional()
   @IsBoolean()
   is_default?: boolean;
+  @IsEnum(EnumAddressType)
+  type: EnumAddressType;
+  @IsEnum(EnumAddressStatus)
+  status: EnumAddressStatus;
 }
