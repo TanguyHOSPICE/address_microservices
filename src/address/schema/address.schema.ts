@@ -10,8 +10,8 @@ export class Address {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true })
   user_id: mongoose.Types.ObjectId;
 
-  @Prop({ type: String, required: true })
-  full_name: string;
+  @Prop()
+  full_name?: string;
 
   @Prop({ type: String, required: true })
   street: string;
