@@ -1,3 +1,4 @@
+import { Transform } from 'class-transformer';
 import {
   IsMongoId,
   IsString,
@@ -11,8 +12,9 @@ export class CreateAddressDto {
   @IsMongoId()
   user_id: string;
 
-  @IsString()
-  full_name: string;
+  @IsOptional()
+  @IsString({ message: '⚠️full_name must be a string if provided' })
+  full_name?: string;
 
   @IsString()
   street: string;

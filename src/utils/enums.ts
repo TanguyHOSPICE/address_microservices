@@ -5,7 +5,7 @@ export enum EnumAddressType {
   WORK = 'work',
   PICKUP = 'pickup',
   OTHER = 'other',
-  DEFAULT = 'default',
+  // DEFAULT = 'default',
   RETURN = 'return',
 }
 export enum EnumAddressStatus {
