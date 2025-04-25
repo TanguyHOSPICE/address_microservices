@@ -27,7 +27,12 @@ export class AddressesMicroserviceController {
     return this.addressesService.getAllAddresses(query);
   }
 
-  @MessagePattern('UPDATE_ADDRESS') // MessagePattern pour la mise à jour d'une adresse
+  @MessagePattern('GET_ADDRESS_BY_ID')
+  async getAddressById(@Payload() addressId: string): Promise<Address> {
+    return this.addressesService.getAddressById(addressId);
+  }
+
+  @MessagePattern('UPDATE_ADDRESS')
   async updateAddress(
     @Payload() data: { addressId: string; updateData: UpdateAddressDto },
   ): Promise<Address> {

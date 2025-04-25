@@ -217,13 +217,28 @@ export class AddressesService {
     return formattedAddresses;
   }
 
+  async getAddressById(addressId: string): Promise<Address> {
+    const address = await this.addressModel.findById(addressId);
+    console.log('🧙🏽‍♂️ ~ AddressesService ~ getAddressById ~ address:', address);
+
+    if (!address) {
+      throw new RpcCustomException(
+        `Address with id ${addressId} not found`,
+        HttpStatus.NOT_FOUND,
+        '404',
+      );
+    }
+
+    return address;
+  }
+
   async update(
     addressId: string,
     updateAddressDto: UpdateAddressDto,
   ): Promise<Address> {
     const { is_default } = updateAddressDto;
 
-    // Vérifier si l'adresse existe
+    // Check if the addressId exists
     const addressToUpdate = await this.addressModel.findById(addressId);
 
     if (!addressToUpdate) {
@@ -234,13 +249,12 @@ export class AddressesService {
       );
     }
 
-    // Si is_default est défini et que c'est vrai, vérifier si une autre adresse existe déjà avec is_default true
+    // Check if the address is already set as default
     if (is_default !== undefined && is_default === true) {
-      // Vérifier s'il y a déjà une adresse par défaut pour ce même user
       const existingDefaultAddress = await this.addressModel.findOne({
         user_id: addressToUpdate.user_id,
         is_default: true,
-        _id: { $ne: addressId }, // Exclure l'adresse actuelle
+        _id: { $ne: addressId }, // Exclude the current address from the search
       });
 
       if (existingDefaultAddress) {
@@ -250,18 +264,15 @@ export class AddressesService {
           '400',
         );
       }
-
-      // Si aucune adresse n'est déjà par défaut, alors on peut continuer à mettre à jour
     }
 
-    // Mise à jour de l'adresse
     const updatedAddress = await this.addressModel.findByIdAndUpdate(
       addressId,
       { $set: updateAddressDto },
-      { new: true }, // Retourne le document mis à jour
+      { new: true }, // Return the updated document
     );
 
-    // Si l'adresse mise à jour est par défaut, mettre à jour les autres adresses pour qu'elles ne soient pas par défaut
+    // Check if the address is set as default and update other addresses accordingly
     if (updatedAddress.is_default) {
       await this.addressModel.updateMany(
         { user_id: updatedAddress.user_id, _id: { $ne: updatedAddress._id } },
@@ -269,7 +280,6 @@ export class AddressesService {
       );
     }
 
-    // Retourner l'adresse mise à jour
     return updatedAddress;
   }
 }
