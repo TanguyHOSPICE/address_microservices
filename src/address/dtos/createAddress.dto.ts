@@ -1,15 +1,15 @@
-import { Transform } from 'class-transformer';
 import {
-  IsMongoId,
   IsString,
   IsOptional,
   IsBoolean,
   IsEnum,
+  IsNotEmpty,
 } from 'class-validator';
-import { EnumAddressStatus, EnumAddressType } from 'src/utils/enums';
+import { EnumAddressStatus, EnumAddressType } from 'src/utils/enums/enums';
 
 export class CreateAddressDto {
-  @IsMongoId()
+  @IsString()
+  @IsNotEmpty()
   user_id: string;
 
   @IsOptional()
@@ -28,6 +28,9 @@ export class CreateAddressDto {
   @IsString()
   country: string;
 
+  @IsOptional()
+  @IsString()
+  state?: string;
   @IsOptional()
   @IsString()
   phone_number?: string;

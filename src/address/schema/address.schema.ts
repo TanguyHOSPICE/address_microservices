@@ -1,7 +1,7 @@
-import { EnumAddressStatus } from './../../utils/enums';
+import { EnumAddressStatus } from '../../utils/enums/enums';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { EnumAddressType } from 'src/utils/enums';
+import { EnumAddressType } from 'src/utils/enums/enums';
 
 export type AddressDocument = HydratedDocument<Address>;
 
@@ -21,6 +21,9 @@ export class Address {
 
   @Prop({ type: String, required: true })
   postal_code: string;
+
+  @Prop()
+  state?: string;
 
   @Prop({ type: String, required: true })
   country: string;
