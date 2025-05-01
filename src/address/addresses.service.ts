@@ -9,6 +9,7 @@ import { RpcCustomException } from 'src/exceptions/rpc-custom.exception';
 import { QueriesAddressDto } from './dtos/queriesAddress.dto';
 import { IgroupedAddresses } from 'src/utils/interfaces/interfaces';
 import { UpdateAddressDto } from './dtos/updateAddress.dto';
+import { EnumAddressStatus } from 'src/utils/enums/enums';
 
 @Injectable()
 export class AddressesService {
@@ -281,5 +282,57 @@ export class AddressesService {
     }
 
     return updatedAddress;
+  }
+
+  // ! Soft delete: Update the status to "archived"
+  async deleteToArchived(addressId: string): Promise<Address> {
+    const address = await this.addressModel.findById(addressId);
+
+    if (!address) {
+      throw new RpcCustomException(
+        `Address with id ${addressId} not found`,
+        HttpStatus.NOT_FOUND,
+        '404',
+      );
+    }
+
+    // Check if the address is default
+    if (address.is_default) {
+      throw new RpcCustomException(
+        `Cannot archive a default address. Please set another address as default first.`,
+        HttpStatus.BAD_REQUEST,
+        '400',
+      );
+    }
+
+    // Mise à jour du statut à "archived"
+    address.status = EnumAddressStatus.ARCHIVED;
+    await address.save();
+
+    return address;
+  }
+
+  // Hard delete: Remove the address from the database
+  async delete(addressId: string): Promise<Address> {
+    const address = await this.addressModel.findByIdAndDelete(addressId);
+    console.log('🧙🏽‍♂️ ~ AddressesService ~ delete ~ address:', address);
+
+    // if (!address) {
+    //   throw new RpcCustomException(
+    //     `Address with id ${addressId} not found`,
+    //     HttpStatus.NOT_FOUND,
+    //     '404',
+    //   );
+    // }
+
+    // // Remove the address id from the user's addresses array in the users microservice
+    // await lastValueFrom(
+    //   this.nats.send('USER_GET_USER_BY_ID', {
+    //     user_id: address.user_id,
+    //     addresses: [address._id],
+    //   }),
+    // );
+
+    return address;
   }
 }

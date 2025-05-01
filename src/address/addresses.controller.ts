@@ -39,4 +39,14 @@ export class AddressesMicroserviceController {
     const { addressId, updateData } = data;
     return this.addressesService.update(addressId, updateData);
   }
+
+  @MessagePattern('DELETE_TO_ARCHIVED')
+  async deleteToArchived(@Payload() addressId: string): Promise<Address> {
+    return this.addressesService.deleteToArchived(addressId);
+  }
+
+  @MessagePattern('DELETE_ADDRESS')
+  async deleteAddress(@Payload() addressId: string): Promise<Address> {
+    return this.addressesService.delete(addressId);
+  }
 }
