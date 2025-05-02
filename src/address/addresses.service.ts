@@ -239,7 +239,7 @@ export class AddressesService {
   ): Promise<Address> {
     const { is_default } = updateAddressDto;
 
-    // Check if the addressId exists
+    // === 👇 Check if the addressId exists
     const addressToUpdate = await this.addressModel.findById(addressId);
 
     if (!addressToUpdate) {
@@ -250,7 +250,7 @@ export class AddressesService {
       );
     }
 
-    // Check if the address is already set as default
+    // === 👇 Check if the address is already set as default ===
     if (is_default !== undefined && is_default === true) {
       const existingDefaultAddress = await this.addressModel.findOne({
         user_id: addressToUpdate.user_id,
@@ -267,13 +267,14 @@ export class AddressesService {
       }
     }
 
+    // === 👇 Update address ===
     const updatedAddress = await this.addressModel.findByIdAndUpdate(
       addressId,
       { $set: updateAddressDto },
       { new: true }, // Return the updated document
     );
 
-    // Check if the address is set as default and update other addresses accordingly
+    // === 👇 Check if the address is set as default and update other addresses accordingly
     if (updatedAddress.is_default) {
       await this.addressModel.updateMany(
         { user_id: updatedAddress.user_id, _id: { $ne: updatedAddress._id } },
@@ -314,25 +315,28 @@ export class AddressesService {
 
   // Hard delete: Remove the address from the database
   async delete(addressId: string): Promise<Address> {
-    const address = await this.addressModel.findByIdAndDelete(addressId);
-    console.log('🧙🏽‍♂️ ~ AddressesService ~ delete ~ address:', address);
+    // === 👇
+    const delAddress = await this.addressModel.findByIdAndDelete(addressId);
+    // console.log('🧙🏽‍♂️ ~ AddressesService ~ delete ~ address:', delAddress); // ! dev tool
+    // === 👇 Check if the addressId exists ===
+    if (!delAddress) {
+      throw new RpcCustomException(
+        `Address with id ${addressId} not found`,
+        HttpStatus.NOT_FOUND,
+        '404',
+      );
+    }
 
-    // if (!address) {
-    //   throw new RpcCustomException(
-    //     `Address with id ${addressId} not found`,
-    //     HttpStatus.NOT_FOUND,
-    //     '404',
-    //   );
-    // }
+    // === 🔄 Update user addresses field to remove the deleted address id
+    await lastValueFrom(
+      this.nats.send('USER_UPDATE', {
+        _id: delAddress.user_id,
+        update: {
+          $pull: { addresses: delAddress._id },
+        },
+      }),
+    );
 
-    // // Remove the address id from the user's addresses array in the users microservice
-    // await lastValueFrom(
-    //   this.nats.send('USER_GET_USER_BY_ID', {
-    //     user_id: address.user_id,
-    //     addresses: [address._id],
-    //   }),
-    // );
-
-    return address;
+    return delAddress;
   }
 }
