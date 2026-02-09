@@ -1,20 +1,14 @@
-FROM node:20-alpine
+FROM node:20
 
-# Installer les outils pour compiler les packages natifs
-RUN apk add --no-cache python3 g++ make git
+WORKDIR /usr/src/app
 
-
-# Installer pnpm globalement
 RUN npm install -g pnpm
 
-  WORKDIR /usr/src/app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install
 
-# Installer toutes les dépendances
-# Copier package.json et lockfile
-  COPY package.json pnpm-lock.yaml* ./
+COPY . .
 
-  RUN pnpm install --frozen-lockfile
+EXPOSE 3000
 
-# Copier tout le code
-  COPY . .
-
+CMD ["pnpm", "run", "start:dev"]
