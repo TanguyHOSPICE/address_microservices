@@ -5,11 +5,11 @@ import { Address } from './schema/address.schema';
 import mongoose, { Model } from 'mongoose';
 import { CreateAddressDto } from './dtos/createAddress.dto';
 import { lastValueFrom } from 'rxjs';
-import { RpcCustomException } from 'src/exceptions/rpc-custom.exception';
+import { RpcCustomException } from '../exceptions/rpc-custom.exception';
 import { QueriesAddressDto } from './dtos/queriesAddress.dto';
-import { IgroupedAddresses } from 'src/utils/interfaces/interfaces';
+import { IgroupedAddresses } from '../utils/interfaces/interfaces';
 import { UpdateAddressDto } from './dtos/updateAddress.dto';
-import { EnumAddressStatus } from 'src/utils/enums/enums';
+import { EnumAddressStatus } from '../utils/enums/enums';
 
 @Injectable()
 export class AddressesService {

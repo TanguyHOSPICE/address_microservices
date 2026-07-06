@@ -5,7 +5,7 @@ import {
   IsEnum,
   IsNotEmpty,
 } from 'class-validator';
-import { EnumAddressStatus, EnumAddressType } from 'src/utils/enums/enums';
+import { EnumAddressStatus, EnumAddressType } from '../../utils/enums/enums';
 
 export class CreateAddressDto {
   @IsString()

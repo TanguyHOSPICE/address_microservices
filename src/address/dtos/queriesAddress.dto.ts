@@ -1,5 +1,5 @@
 import { IsOptional, IsString, IsBoolean, IsEnum } from 'class-validator';
-import { EnumAddressStatus, EnumAddressType } from 'src/utils/enums/enums';
+import { EnumAddressStatus, EnumAddressType } from '../../utils/enums/enums';
 
 export class QueriesAddressDto {
   @IsOptional()

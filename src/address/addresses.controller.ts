@@ -4,7 +4,7 @@ import { AddressesService } from './addresses.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { CreateAddressDto } from './dtos/createAddress.dto';
 import { QueriesAddressDto } from './dtos/queriesAddress.dto';
-import { IgroupedAddresses } from 'src/utils/interfaces/interfaces';
+import { IgroupedAddresses } from '../utils/interfaces/interfaces';
 import { UpdateAddressDto } from './dtos/updateAddress.dto';
 
 @Controller('addresses')

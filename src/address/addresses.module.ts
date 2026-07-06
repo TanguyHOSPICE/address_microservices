@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { NatsClientModule } from 'src/nats-client/nats-client.module';
+import { NatsClientModule } from '../nats-client/nats-client.module';
 import { Address, AddressSchema } from './schema/address.schema';
 import { AddressesService } from './addresses.service';
 import { AddressesMicroserviceController } from './addresses.controller';

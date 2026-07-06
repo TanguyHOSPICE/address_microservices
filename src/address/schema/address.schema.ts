@@ -1,7 +1,7 @@
 import { EnumAddressStatus } from '../../utils/enums/enums';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { EnumAddressType } from 'src/utils/enums/enums';
+import { EnumAddressType } from '../../utils/enums/enums';
 
 export type AddressDocument = HydratedDocument<Address>;
 
